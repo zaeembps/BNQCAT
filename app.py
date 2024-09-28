@@ -1,3 +1,9 @@
+import openai
+import streamlit as st
+
+# Check OpenAI version
+st.write(f"OpenAI Library Version: {openai.__version__}")
+
 import streamlit as st
 import pandas as pd
 import openai
