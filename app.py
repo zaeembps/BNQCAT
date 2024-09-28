@@ -4,14 +4,14 @@ import openai
 from rapidfuzz import fuzz, process
 import re
 
-# Set the OpenAI API key from Streamlit Secrets (or directly if testing locally)
+# Set the OpenAI API key from Streamlit Secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# Function to query OpenAI's GPT-3.5 for matching product descriptions
+# Function to query GPT-3.5 or GPT-4 for matching product descriptions
 def query_gpt(product_description):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo",  # Change to "gpt-4" if needed
             messages=[
                 {"role": "system", "content": "You are a product matching assistant."},
                 {"role": "user", "content": f"Match the following product description to the most suitable product type: {product_description}"}
@@ -24,10 +24,12 @@ def query_gpt(product_description):
         return "Connection Error: Unable to reach OpenAI's API."
     except openai.error.RateLimitError:
         return "Rate Limit Exceeded: You have hit your rate limit."
+    except openai.error.InvalidRequestError as e:
+        return f"Invalid Request: {e}"
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
-# Clean and preprocess the product description (removes special characters and converts to lowercase)
+# Function to clean and preprocess the product description (removes special characters and converts to lowercase)
 def clean_description(description):
     description = description.lower()
     description = re.sub(r'[^\w\s]', '', description)  # Remove special characters
@@ -47,7 +49,7 @@ def get_best_token_match(product_description, df, column_to_match, code_column, 
 st.title("AI-assisted Product Code Finder")
 st.write("Enter a product description to find the most suitable product type and category codes.")
 
-# Load the product type and category data
+# Load the product type and category data (cached for performance)
 @st.cache_data
 def load_data():
     product_type_df = pd.read_csv("B&Q Product Type Codes.csv")
