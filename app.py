@@ -5,13 +5,12 @@ from rapidfuzz import fuzz, process
 import re
 
 # Set your OpenAI API key here (or use environment variables)
-openai.api_key = "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"
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-
-# Function to query GPT-4 using the Chat API
+# Function to query GPT-3.5 using the Chat API
 def query_gpt(product_description):
     response = openai.ChatCompletion.create(
-        model="gpt-4",  # Using GPT-4
+        model="gpt-3.5-turbo",  # Switched to GPT-3.5
         messages=[
             {"role": "system", "content": "You are a product matching assistant."},
             {"role": "user", "content": f"Match the following product description to the most suitable product type: {product_description}"}
@@ -38,7 +37,7 @@ def get_best_token_match(product_description, df, column_to_match, code_column, 
     return None, None
 
 # Title of the app
-st.title("AI-assisted Product Code Finder with GPT-4")
+st.title("AI-assisted Product Code Finder with GPT-3.5")
 
 # Load the CSV data
 @st.cache_data
@@ -56,9 +55,9 @@ product_description = st.text_input("Enter the Product Description")
 if product_description:
     st.write(f"Searching for: **{product_description}**")
 
-    # Try GPT-4 to get the best product type match
+    # Try GPT-3.5 to get the best product type match
     gpt_match = query_gpt(product_description)
-    st.write(f"GPT-4's Suggested Match: **{gpt_match}**")
+    st.write(f"GPT-3.5's Suggested Match: **{gpt_match}**")
 
     # Product Type Matching using fuzzy matching as a fallback
     product_type_match, product_type_code = get_best_token_match(
@@ -85,4 +84,4 @@ if product_description:
 
 # Footer
 st.write("---")
-st.write("AI-powered product and category code finder with GPT-4.")
+st.write("AI-powered product and category code finder with GPT-3.5.")
