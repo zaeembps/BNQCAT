@@ -1,5 +1,5 @@
 streamlit
-pandas
-fuzzywuzzy
-python-levenshtein
 openai>=1.0.0
+pandas
+rapidfuzz
+python-levenshtein
