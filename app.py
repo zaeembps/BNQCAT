@@ -4,13 +4,13 @@ import openai
 from rapidfuzz import fuzz, process
 import re
 
-# Set your OpenAI API key here (or use environment variables)
+# Set the OpenAI API key from Streamlit Secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# Function to query GPT-3.5 using the Chat API
+# Function to query GPT-3.5 using the new OpenAI API
 def query_gpt(product_description):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # Switched to GPT-3.5
+    response = openai.completions.create(  # Use the new API method
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a product matching assistant."},
             {"role": "user", "content": f"Match the following product description to the most suitable product type: {product_description}"}
